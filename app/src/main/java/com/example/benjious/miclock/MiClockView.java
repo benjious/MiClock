@@ -12,10 +12,14 @@ import android.graphics.Path;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.SweepGradient;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
+
+import static android.R.attr.cycles;
+import static android.R.attr.x;
 
 
 /**
@@ -163,10 +167,13 @@ public class MiClockView extends View {
         mHourTextPaint.setColor(colorScaleRing);
         mHourTextPaint.setTextSize(mTextSize);
 
+        //描边
         mCirclePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mCirclePaint.setStyle(Paint.Style.STROKE);
         mCirclePaint.setStrokeWidth(mCircleStrokeWidth);
         mCirclePaint.setColor(mDarkColor);
+
+        mCircleRectF = new RectF();
     }
 
 //    @Override
@@ -199,8 +206,6 @@ public class MiClockView extends View {
         //加一个默认的padding值，为了防止用camera旋转时钟时造成四周超出view大小
         //根据比例确定默认padding大小
         mDefaultPadding = 0.12f * mRadius;
-        //为了适配控件大小match_parent、wrap_content、精确数值以及padding属性
-        //这个要结合图形看，可以计算出这样的padding可以使图形处于屏幕中心
         mPaddingLeft = mDefaultPadding + w / 2 - mRadius + getPaddingLeft();
         mPaddingTop = mDefaultPadding + h / 2 - mRadius + getPaddingTop();
         mPaddingRight = mPaddingLeft;
@@ -230,6 +235,13 @@ public class MiClockView extends View {
         super.onDraw(canvas);
         mCanvas = canvas;
         drawTimeText();
+        drawWidSecondLine();
+
+    }
+
+    private void drawWidSecondLine() {
+
+
     }
 
     private void init() {
@@ -269,7 +281,6 @@ public class MiClockView extends View {
         rightTextBound.right = centerX + radius + scaleTextWidthOne / 2;
         rightTextBound.bottom = leftTextBound.bottom;
 
-
         //baseline = center + (FontMetrics.bottom - FontMetrics.top)/2 - FontMetrics.bottom;
         //12,6,9,3
         Paint.FontMetrics fm = mHourTextPaint.getFontMetrics();
@@ -283,11 +294,11 @@ public class MiClockView extends View {
         hourTextCoordinates[2][1] = centerLeft + (fm.bottom - fm.top) / 2 - fm.bottom;
         hourTextCoordinates[3][0] = rightTextBound.left;
         hourTextCoordinates[3][1] = centerRight + (fm.bottom - fm.top) / 2 - fm.bottom;
-
-
     }
 
-
+    /**
+     * 画四个小时Text和四个圆弧
+     */
     public void drawTimeText() {
         mCanvas.save();
         mCanvas.drawText("12", hourTextCoordinates[0][0], hourTextCoordinates[0][1], mHourTextPaint);
@@ -304,16 +315,12 @@ public class MiClockView extends View {
         mCanvas.drawLine(getWidth() / 2, 0, getWidth() / 2, 3000, paint);
         mCanvas.restore();
 
+        //画四个圆弧
+        mCircleRectF.set(centerX - radius, centerY - radius, centerX + radius, centerY + radius);
+        for (int i = 0; i < 4; i++) {
+            mCanvas.drawArc(mCircleRectF, -85 + 90 * i, 80, false, mCirclePaint);
+        }
 
-//
-//        //画4个弧
-//        mCircleRectF.set(mPaddingLeft + mTextRect.height() / 2 + mCircleStrokeWidth / 2,
-//                mPaddingTop + mTextRect.height() / 2 + mCircleStrokeWidth / 2,
-//                getWidth() - mPaddingRight - mTextRect.height() / 2 + mCircleStrokeWidth / 2,
-//                getHeight() - mPaddingBottom - mTextRect.height() / 2 + mCircleStrokeWidth / 2);
-//        for (int i = 0; i < 4; i++) {
-//            mCanvas.drawArc(mCircleRectF, 5 + 90 * i, 80, false, mCirclePaint);
-//        }
 
     }
 
