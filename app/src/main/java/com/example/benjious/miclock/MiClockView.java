@@ -238,43 +238,52 @@ public class MiClockView extends View {
         float scaleTextWidthOne = mHourTextPaint.measureText("6");
         float scaleTextHeight = mHourTextPaint.measureText("12");
 
+        float centerTop = centerY - radius;
+        float centerBottom = centerY + radius;
+        float centerLeft = getHeight() / 2;
+        float centerRight = centerLeft;
+
+
         RectF topText = new RectF();
-        topText.left = centerX - scaleTextWidthTwo / 2 + mPaddingLeft;
-        topText.top = centerY - radiusScaleRing - scaleTextHeight / 2+mPaddingTop;
-        topText.right = centerX + scaleTextWidthTwo / 2+mPaddingRight;
-        topText.bottom = centerY - radiusScaleRing + scaleTextHeight / 2+mPaddingBottom;
+        topText.left = centerX - scaleTextWidthTwo / 2;
+        topText.top = centerY - radius - scaleTextHeight / 2;
+        topText.right = centerX + scaleTextWidthTwo / 2;
+        topText.bottom = centerY - radius + scaleTextHeight / 2;
 
 
         RectF bottomText = new RectF();
         bottomText.left = centerX - scaleTextWidthOne / 2;
-        bottomText.top = centerY + radiusScaleRing - scaleTextHeight / 2;
+        bottomText.top = centerY + radius - scaleTextHeight / 2;
         bottomText.right = centerX + scaleTextWidthOne / 2;
-        bottomText.bottom = centerY + radiusScaleRing + scaleTextHeight / 2;
+        bottomText.bottom = centerY + radius + scaleTextHeight / 2;
 
         RectF leftTextBound = new RectF();
-        leftTextBound.left = centerX - radiusScaleRing - scaleTextWidthOne / 2;
+        leftTextBound.left = centerX - radius - scaleTextWidthOne / 2;
         leftTextBound.top = centerY - scaleTextHeight / 2;
-        leftTextBound.right = centerX - radiusScaleRing + scaleTextWidthOne / 2;
+        leftTextBound.right = centerX - radius + scaleTextWidthOne / 2;
         leftTextBound.bottom = centerY + scaleTextHeight / 2;
 
         RectF rightTextBound = new RectF();
-        rightTextBound.left = centerX + radiusScaleRing - scaleTextWidthOne / 2;
+        rightTextBound.left = centerX + radius - scaleTextWidthOne / 2;
         rightTextBound.top = leftTextBound.top;
-        rightTextBound.right = centerX + radiusScaleRing + scaleTextWidthOne / 2;
+        rightTextBound.right = centerX + radius + scaleTextWidthOne / 2;
         rightTextBound.bottom = leftTextBound.bottom;
 
-        Paint.FontMetrics fm = mHourTextPaint.getFontMetrics();
 
+        //baseline = center + (FontMetrics.bottom - FontMetrics.top)/2 - FontMetrics.bottom;
+        //12,6,9,3
+        Paint.FontMetrics fm = mHourTextPaint.getFontMetrics();
         hourTextCoordinates = new float[4][2];
         hourTextCoordinates[0][0] = topText.left;
-        hourTextCoordinates[0][1] = topText.top + (topText.bottom - topText.top) / 2 - (fm.bottom - fm.top) / 2 - fm.top;
+        hourTextCoordinates[0][1] = centerTop + (fm.bottom - fm.top) / 2 - fm.bottom;
         hourTextCoordinates[1][0] = bottomText.left;
-        hourTextCoordinates[1][1] = bottomText.top + (bottomText.bottom - bottomText.top) / 2 - (fm.bottom - fm.top) / 2 - fm
-                .top;
+        hourTextCoordinates[1][1] = centerBottom + (fm.bottom - fm.top) / 2 - fm
+                .bottom;
         hourTextCoordinates[2][0] = leftTextBound.left;
-        hourTextCoordinates[2][1] = leftTextBound.top + (leftTextBound.bottom - leftTextBound.top) / 2 - (fm.bottom - fm.top) / 2 - fm.top;
+        hourTextCoordinates[2][1] = centerLeft + (fm.bottom - fm.top) / 2 - fm.bottom;
         hourTextCoordinates[3][0] = rightTextBound.left;
-        hourTextCoordinates[3][1] = rightTextBound.top + (rightTextBound.bottom - rightTextBound.top) / 2 - (fm.bottom - fm.top) / 2 - fm.top;
+        hourTextCoordinates[3][1] = centerRight + (fm.bottom - fm.top) / 2 - fm.bottom;
+
 
     }
 
@@ -285,11 +294,14 @@ public class MiClockView extends View {
         mCanvas.drawText("6", hourTextCoordinates[1][0], hourTextCoordinates[1][1], mHourTextPaint);
         mCanvas.drawText("9", hourTextCoordinates[2][0], hourTextCoordinates[2][1], mHourTextPaint);
         mCanvas.drawText("3", hourTextCoordinates[3][0], hourTextCoordinates[3][1], mHourTextPaint);
-        Log.d(TAG, "xyz  drawContent: 执行了没有" + "x:　" + hourTextCoordinates[0][0] + "　ｙ：" + hourTextCoordinates[0][1]);
-        Log.d(TAG, "xyz  onSizeChanged: " + "getWidth()  " + getWidth());
-        Log.d(TAG, "xyz  onSizeChanged: " + "radius :" + radius);
-        Log.d(TAG, "xyz  onSizeChanged: " + "radiusScla :" + radiusScaleRing);
 
+        //设置paint
+        Paint paint = new Paint();
+        paint.setTextSize(120); //以px为单位
+        paint.setTextAlign(Paint.Align.LEFT);
+        paint.setColor(Color.RED);
+        mCanvas.drawLine(0, getHeight() / 2, 3000, getHeight() / 2, paint);
+        mCanvas.drawLine(getWidth() / 2, 0, getWidth() / 2, 3000, paint);
         mCanvas.restore();
 
 
