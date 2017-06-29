@@ -7,9 +7,9 @@
                 android:background="#237EAD"
                 tools:context=".MainActivity">
 
-    <com.example.benjious.miclock.MiClockView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <com.example.benjious.miclock.JianYiClock
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_centerInParent="true"
         monkey:backgroundColor="#237EAD"
         monkey:darkColor="#80ffffff"
